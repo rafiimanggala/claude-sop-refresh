@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sop-refresh — force a re-broadcast of your Claude Code instructions to every
+# sop-refresh, force a re-broadcast of your Claude Code instructions to every
 # live session.
 #
 # How it works (lazy model):

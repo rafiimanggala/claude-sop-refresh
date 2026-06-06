@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib.sh — shared helpers for live-refreshing your Claude Code instructions
+# lib.sh: shared helpers for live-refreshing your Claude Code instructions
 # (CLAUDE.md + rules/*.md) across every running session.
 # Sourced by seed.sh (SessionStart) and watch.sh (UserPromptSubmit).
 
@@ -43,7 +43,7 @@ sop_is_sop_path() {
   return 1
 }
 
-# Hash stdin robustly — a hook's PATH may lack /sbin, so resolve a digest tool
+# Hash stdin robustly, a hook's PATH may lack /sbin, so resolve a digest tool
 # explicitly. A constant fallback would silently disable change detection.
 _sop_hash() {
   if command -v md5 >/dev/null 2>&1; then md5 -q

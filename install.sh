@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — install claude-sop-refresh.
+# install.sh: install claude-sop-refresh.
 #
 #   ./install.sh             copy files + print the settings.json snippet to add
 #   ./install.sh --register  also merge the hooks into ~/.claude/settings.json
@@ -37,7 +37,7 @@ say "✓ CLI   → $BIN_DIR/sop-refresh"
 
 case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
-  *) say "⚠ $BIN_DIR is not on your PATH — add it so 'sop-refresh' is callable." ;;
+  *) say "⚠ $BIN_DIR is not on your PATH, add it so 'sop-refresh' is callable." ;;
 esac
 
 # --- the hook config to add --------------------------------------------------
@@ -59,7 +59,7 @@ JSON
 
 if [[ "$REGISTER" -eq 0 ]]; then
   say ""
-  say "Next step — add these hooks to $SETTINGS (merge into any existing \"hooks\"):"
+  say "Next step, add these hooks to $SETTINGS (merge into any existing \"hooks\"):"
   say ""
   say "$SNIPPET"
   say ""
@@ -92,6 +92,6 @@ if jq -e . "$tmp" >/dev/null 2>&1; then
   say "  Restart running sessions once (or start a new one) so the hooks load."
 else
   rm -f "$tmp"
-  say "✗ merge produced invalid JSON — left $SETTINGS untouched. Add the snippet manually."
+  say "✗ merge produced invalid JSON, left $SETTINGS untouched. Add the snippet manually."
   exit 1
 fi

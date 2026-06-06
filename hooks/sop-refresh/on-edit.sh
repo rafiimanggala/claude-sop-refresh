@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# on-edit.sh — PostToolUse hook (matcher: Write|Edit|MultiEdit).
+# on-edit.sh: PostToolUse hook (matcher: Write|Edit|MultiEdit).
 # When a session edits CLAUDE.md or any rules/*.md, remind the editing agent to
 # ASK the user before broadcasting the refresh to all live sessions.
 # This is the "auto-detect, but confirm first" half of the feature.
@@ -45,7 +45,7 @@ printf '%s\t%s\t%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${sid:-?}" "$fp" >> "${S
 log "edit-detected" "session=${sid} file=${fp} other_live=${others}"
 
 rel="${fp#"$SOP_ROOT"/}"
-ctx="[⚠️ INSTRUCTIONS CHANGED — ${rel}]
+ctx="[⚠️ INSTRUCTIONS CHANGED: ${rel}]
 You just edited your instructions. This edit ALREADY triggers an automatic refresh in every session (the hash changed). There are ${others} other live session(s) running.
 REQUIRED before continuing: ASK the user whether to broadcast the refresh to all sessions now.
 - Yes → run \`sop-refresh\` (forces a re-broadcast and prints each session's status).

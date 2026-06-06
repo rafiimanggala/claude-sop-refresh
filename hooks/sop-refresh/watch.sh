@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# watch.sh — UserPromptSubmit hook.
+# watch.sh: UserPromptSubmit hook.
 # If your instructions (CLAUDE.md + rules/*.md) changed since this session last
 # saw them, inject the latest CLAUDE.md with a SUPERSEDES banner, then record
 # the new version. Lazy by design: a refresh applies on the session's NEXT
@@ -44,7 +44,7 @@ if [[ "$cur" == "$seen" ]]; then
 fi
 
 # NOTE: no busy-status guard here. UserPromptSubmit ALWAYS fires at a turn
-# boundary — the user is submitting a NEW prompt, so any prior task is already
+# boundary, the user is submitting a NEW prompt, so any prior task is already
 # done. The session flips to "busy" the instant the prompt is submitted, so
 # reading status here would (wrongly) report busy on EVERY turn and defer the
 # refresh forever. The "wait until work is done" rule is satisfied structurally:
@@ -57,11 +57,11 @@ sop_body="$(cat "$SOP_FILE" 2>/dev/null || true)"
 rules_list="$(find "$SOP_RULES_DIR" -type f -name '*.md' 2>/dev/null | LC_ALL=C sort \
   | sed "s|${SOP_ROOT}/||" | tr '\n' ',' | sed 's/,$//')"
 
-banner="[⚠️ INSTRUCTIONS REFRESHED — a change was detected since this session started]
+banner="[⚠️ INSTRUCTIONS REFRESHED: a change was detected since this session started]
 REQUIRED: on the FIRST line of your reply, tell the user briefly: \"🔄 Instructions refreshed to the latest version (${seen:0:8} → ${cur:0:8})\". Then answer as usual.
 The instructions below SUPERSEDE the version loaded at the start of this session.
 If anything conflicts with the older copy in your context, FOLLOW THIS ONE.
-On-demand rule files: ${rules_list} — re-read the relevant file when needed.
+On-demand rule files: ${rules_list}, re-read the relevant file when needed.
 
 === CLAUDE.md (LATEST) ===
 ${sop_body}"
@@ -72,7 +72,7 @@ log "refresh" "session=${sid} old=${seen} new=${cur} chars=${#banner}"
 
 # systemMessage = the line VISIBLE to the user (refresh confirmation).
 # additionalContext = the full instructions the model reads (not shown to user).
-visible="🔄 INSTRUCTIONS REFRESH — CLAUDE.md/rules changed, latest version loaded (${seen:0:8} → ${cur:0:8})"
+visible="🔄 INSTRUCTIONS REFRESH: CLAUDE.md/rules changed, latest version loaded (${seen:0:8} → ${cur:0:8})"
 jq -ac -n --arg ctx "$banner" --arg msg "$visible" '{
   systemMessage: $msg,
   hookSpecificOutput: {

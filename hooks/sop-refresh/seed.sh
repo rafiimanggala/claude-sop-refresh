@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# seed.sh — SessionStart hook.
+# seed.sh: SessionStart hook.
 # Record the instruction version this session was BORN with, so watch.sh only
 # fires on a LATER change (no false refresh on the very first prompt).
 # Fail-safe: any error → exit 0, never block session start.

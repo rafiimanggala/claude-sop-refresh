@@ -1,8 +1,8 @@
 # claude-sop-refresh
 
-**Edit your Claude Code instructions once — every running session picks them up on its next turn. No restart, no lost context.**
+**Edit your Claude Code instructions once, every running session picks them up on its next turn. No restart, no lost context.**
 
-Claude Code loads your `CLAUDE.md` and `rules/*.md` **once, at session start**. If you keep several sessions open across terminals and edit those files mid-session, the running sessions keep following the **stale** instructions until you restart them — and restarting throws away the conversation.
+Claude Code loads your `CLAUDE.md` and `rules/*.md` **once, at session start**. If you keep several sessions open across terminals and edit those files mid-session, the running sessions keep following the **stale** instructions until you restart them, and restarting throws away the conversation.
 
 `claude-sop-refresh` is a small set of hooks (+ a CLI) that watches `CLAUDE.md` and `rules/*.md`, and when they change, injects the latest version into **every live session** on its next prompt. Lazy by design: the refresh lands at a turn boundary, so it never interrupts a task in progress.
 
@@ -26,18 +26,18 @@ Claude Code can already hot-reload some things, but **not** your memory files:
 | `/reload-skills` | skills + commands | current session | manual |
 | `/reload-plugins` | plugins / MCP | current session | manual |
 | settings.json hot-reload | permissions, hooks, env | all sessions | automatic |
-| **`CLAUDE.md` / `rules/`** | — | — | **nothing native** |
+| **`CLAUDE.md` / `rules/`** | (none) | (none) | **nothing native** |
 | **claude-sop-refresh** | **CLAUDE.md + rules** | **all sessions** | **automatic, on file change** |
 
-If Anthropic ships native memory hot-reload, great — this becomes obsolete and you uninstall it. Until then, this fills the gap.
+If Anthropic ships native memory hot-reload, great, this becomes obsolete and you uninstall it. Until then, this fills the gap.
 
 ## How it works
 
 Three hooks, all fail-safe (any error → they emit `{}` / exit 0 and never block a prompt):
 
-- **`seed.sh`** (`SessionStart`) — records the instruction version this session was born with, so a refresh only fires on a *later* change (no false refresh on the first prompt).
-- **`watch.sh`** (`UserPromptSubmit`) — hashes `CLAUDE.md` + `rules/*.md` each prompt; if the hash differs from what this session last saw, injects the latest `CLAUDE.md` with a SUPERSEDES banner and a one-line confirmation visible to you.
-- **`on-edit.sh`** (`PostToolUse`, matcher `Write|Edit|MultiEdit`) — when Claude itself edits your instructions, it reminds the agent to ask you before broadcasting to other sessions.
+- **`seed.sh`** (`SessionStart`), records the instruction version this session was born with, so a refresh only fires on a *later* change (no false refresh on the first prompt).
+- **`watch.sh`** (`UserPromptSubmit`), hashes `CLAUDE.md` + `rules/*.md` each prompt; if the hash differs from what this session last saw, injects the latest `CLAUDE.md` with a SUPERSEDES banner and a one-line confirmation visible to you.
+- **`on-edit.sh`** (`PostToolUse`, matcher `Write|Edit|MultiEdit`), when Claude itself edits your instructions, it reminds the agent to ask you before broadcasting to other sessions.
 
 The "version" is a hash of `CLAUDE.md` + every `rules/*.md` + a nonce file. Daily logs / memory are deliberately excluded (they change constantly).
 
@@ -77,7 +77,7 @@ If you'd rather edit `~/.claude/settings.json` yourself, merge this into your `"
 
 ## Usage
 
-Most of the time you do nothing — just edit `CLAUDE.md` and every session refreshes on its next prompt.
+Most of the time you do nothing, just edit `CLAUDE.md` and every session refreshes on its next prompt.
 
 ```bash
 sop-refresh            # force a re-broadcast even if no file changed, list live sessions
@@ -102,8 +102,8 @@ Total live=2, busy=1. Refresh is lazy (applied at a turn boundary, never interru
 
 ## Security & trust
 
-- **What gets injected is your own `CLAUDE.md` + `rules/`** — the same files Claude already loads at startup. The SUPERSEDES banner just tells the model to prefer the fresh copy. This is the same trust boundary you already grant your instructions; it is **not** a new prompt-injection vector.
-- **Corollary:** don't put untrusted, third-party-authored content in `CLAUDE.md` / `rules/`. If you sync those from a shared repo, the banner will reinforce whatever they contain — that's true of native loading too, but worth stating.
+- **What gets injected is your own `CLAUDE.md` + `rules/`**, the same files Claude already loads at startup. The SUPERSEDES banner just tells the model to prefer the fresh copy. This is the same trust boundary you already grant your instructions; it is **not** a new prompt-injection vector.
+- **Corollary:** don't put untrusted, third-party-authored content in `CLAUDE.md` / `rules/`. If you sync those from a shared repo, the banner will reinforce whatever they contain, that's true of native loading too, but worth stating.
 - The hooks only ever write under `~/.claude` (a version marker per session, a nonce, a small log). `session_id` from the hook payload is validated (`[A-Za-z0-9_-]` only) before it's used in any path, so a malformed id can't escape that directory.
 - Everything is plain Bash you can read in a few minutes. No network calls, no telemetry.
 

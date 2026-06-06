@@ -1,0 +1,9 @@
+# Runtime state — never commit
+hooks/sop-refresh/logs/
+*.log
+.sop-nonce
+.sop-pending
+session-env/
+
+# OS cruft
+.DS_Store
